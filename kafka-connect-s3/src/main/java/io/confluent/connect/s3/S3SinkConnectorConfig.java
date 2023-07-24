@@ -182,7 +182,7 @@ public class S3SinkConnectorConfig extends StorageSinkConnectorConfig {
   public static final Class<? extends Format> HEADERS_FORMAT_CLASS_DEFAULT = AvroFormat.class;
 
   /**
-   * Elastic buffer to save memory. {@link io.confluent.connect.s3.storage.S3OutputStream#buffer}
+   * Elastic buffer to save memory. {@link io.confluent.connect.s3.storage.S3OutputStream}
    */
 
   public static final String ELASTIC_BUFFER_ENABLE = "s3.elastic.buffer.enable";
@@ -687,114 +687,113 @@ public class S3SinkConnectorConfig extends StorageSinkConnectorConfig {
       int orderInGroup = 0;
 
       configDef.define(
-          STORE_KAFKA_KEYS_CONFIG,
-          Type.BOOLEAN,
-          false,
-          Importance.LOW,
-          "Enable or disable writing keys to storage. "
-              + "This config is mandatory when the writing of tombstone records is enabled.",
-          group,
-          ++orderInGroup,
-          Width.SHORT,
-          "Store kafka keys",
-          Collections.singletonList(KEYS_FORMAT_CLASS_CONFIG)
+              STORE_KAFKA_KEYS_CONFIG,
+              Type.BOOLEAN,
+              false,
+              Importance.LOW,
+              "Enable or disable writing keys to storage. "
+                      + "This config is mandatory when the writing of tombstone records is enabled",
+              group,
+              ++orderInGroup,
+              Width.SHORT,
+              "Store kafka keys",
+              Collections.singletonList(KEYS_FORMAT_CLASS_CONFIG)
       );
 
       configDef.define(
-          STORE_KAFKA_HEADERS_CONFIG,
-          Type.BOOLEAN,
-          false,
-          Importance.LOW,
-          "Enable or disable writing headers to storage.",
-          group,
-          ++orderInGroup,
-          Width.SHORT,
-          "Store kafka headers",
-          Collections.singletonList(HEADERS_FORMAT_CLASS_CONFIG)
+              STORE_KAFKA_HEADERS_CONFIG,
+              Type.BOOLEAN,
+              false,
+              Importance.LOW,
+              "Enable or disable writing headers to storage.",
+              group,
+              ++orderInGroup,
+              Width.SHORT,
+              "Store kafka headers",
+              Collections.singletonList(HEADERS_FORMAT_CLASS_CONFIG)
       );
 
       configDef.define(
-          KEYS_FORMAT_CLASS_CONFIG,
-          Type.CLASS,
-          KEYS_FORMAT_CLASS_DEFAULT,
-          Importance.LOW,
-          "The format class to use when writing keys to the store.",
-          group,
-          ++orderInGroup,
-          Width.NONE,
-          "Keys format class",
-          KEYS_FORMAT_CLASS_RECOMMENDER
+              KEYS_FORMAT_CLASS_CONFIG,
+              Type.CLASS,
+              KEYS_FORMAT_CLASS_DEFAULT,
+              Importance.LOW,
+              "The format class to use when writing keys to the store.",
+              group,
+              ++orderInGroup,
+              Width.NONE,
+              "Keys format class",
+              KEYS_FORMAT_CLASS_RECOMMENDER
       );
 
       configDef.define(
-          HEADERS_FORMAT_CLASS_CONFIG,
-          Type.CLASS,
-          HEADERS_FORMAT_CLASS_DEFAULT,
-          Importance.LOW,
-          "The format class to use when writing headers to the store.",
-          group,
-          ++orderInGroup,
-          Width.NONE,
-          "Headers format class",
-          HEADERS_FORMAT_CLASS_RECOMMENDER
+              HEADERS_FORMAT_CLASS_CONFIG,
+              Type.CLASS,
+              HEADERS_FORMAT_CLASS_DEFAULT,
+              Importance.LOW,
+              "The format class to use when writing headers to the store.",
+              group,
+              ++orderInGroup,
+              Width.NONE,
+              "Headers format class",
+              HEADERS_FORMAT_CLASS_RECOMMENDER
       );
 
       configDef.define(
-          S3_PATH_STYLE_ACCESS_ENABLED_CONFIG,
-          Type.BOOLEAN,
-          S3_PATH_STYLE_ACCESS_ENABLED_DEFAULT,
-          Importance.LOW,
-          "Specifies whether or not to enable path style access to the bucket used by the "
-              + "connector",
-          group,
-          ++orderInGroup,
-          Width.SHORT,
-          "Enable Path Style Access to S3"
+              S3_PATH_STYLE_ACCESS_ENABLED_CONFIG,
+              Type.BOOLEAN,
+              S3_PATH_STYLE_ACCESS_ENABLED_DEFAULT,
+              Importance.LOW,
+              "Specifies whether or not to enable path style access to the bucket used by the "
+                      + "connector",
+              group,
+              ++orderInGroup,
+              Width.SHORT,
+              "Enable Path Style Access to S3"
       );
       configDef.define(
-          ELASTIC_BUFFER_ENABLE,
-          Type.BOOLEAN,
-          ELASTIC_BUFFER_ENABLE_DEFAULT,
-          Importance.LOW,
-          "Specifies whether or not to allocate elastic buffer for staging s3-part to save memory."
-              + " Note that this may cause decreased performance or increased CPU usage",
-          group,
-          ++orderInGroup,
-          Width.LONG,
-          "Enable elastic buffer to staging s3-part"
+              ELASTIC_BUFFER_ENABLE,
+              Type.BOOLEAN,
+              ELASTIC_BUFFER_ENABLE_DEFAULT,
+              Importance.LOW,
+              "Specifies whether or not to allocate elastic buffer for staging s3-part to save "
+                      + "memory. Note that this may cause decreased performance "
+                      + "or increased CPU usage",
+              group,
+              ++orderInGroup,
+              Width.LONG,
+              "Enable elastic buffer to staging s3-part"
       );
 
       configDef.define(
-          ELASTIC_BUFFER_INIT_CAPACITY,
-          Type.INT,
-          ELASTIC_BUFFER_INIT_CAPACITY_DEFAULT,
-          atLeast(4096),
-          Importance.LOW,
-          "Elastic buffer initial capacity.",
-          group,
-          ++orderInGroup,
-          Width.LONG,
-          "Elastic buffer initial capacity"
+              ELASTIC_BUFFER_INIT_CAPACITY,
+              Type.INT,
+              ELASTIC_BUFFER_INIT_CAPACITY_DEFAULT,
+              atLeast(4096),
+              Importance.LOW,
+              "Elastic buffer initial capacity.",
+              group,
+              ++orderInGroup,
+              Width.LONG,
+              "Elastic buffer initial capacity"
       );
 
+      configDef.define(
+              UPLOAD_INTEGRITY_CHECK,
+              Type.BOOLEAN,
+              UPLOAD_INTEGRITY_CHECK_DEFAULT,
+              Importance.LOW,
+              "Enable or disable integrity checks while uploading parts during "
+                      + " a multi-part upload. If true, the MD5 digest of each part would be sent "
+                      + "which would then be used to verify a successful transfer of the part. "
+                      + "Else, no MD5 digest would be sent and the integrity "
+                      + "of data during upload cannot be guaranteed.",
+              group,
+              ++orderInGroup,
+              Width.SHORT,
+              "Upload Integrity Check"
+      );
     }
-
-    configDef.define(
-            UPLOAD_INTEGRITY_CHECK,
-            Type.BOOLEAN,
-            UPLOAD_INTEGRITY_CHECK_DEFAULT,
-            Importance.LOW,
-            "Enable or disable integrity checks while uploading parts during "
-                    + " a multi-part upload. If true, the MD5 digest of each part would be sent "
-                    + "which would then be used to verify a successful transfer of the part. "
-                    + "Else, no MD5 digest would be sent and the integrity "
-                    + "of data during upload cannot be guaranteed.",
-            group,
-            ++orderInGroup,
-            Width.SHORT,
-            "Upload Integrity Check"
-    );
-
     return configDef;
   }
 
