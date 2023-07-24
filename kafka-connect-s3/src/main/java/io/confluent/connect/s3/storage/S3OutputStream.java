@@ -52,6 +52,7 @@ import java.util.function.Supplier;
 public class S3OutputStream extends PositionOutputStream {
   private static final Logger log = LoggerFactory.getLogger(S3OutputStream.class);
   private final AmazonS3 s3;
+  private final Boolean uploadIntegrityCheck;
   private final String bucket;
   private final String key;
   private final String ssea;
@@ -70,6 +71,7 @@ public class S3OutputStream extends PositionOutputStream {
 
   public S3OutputStream(String key, S3SinkConnectorConfig conf, AmazonS3 s3) {
     this.s3 = s3;
+    this.uploadIntegrityCheck = conf.uploadIntegrityCheck();
     this.bucket = conf.getBucketName();
     this.key = key;
     this.ssea = conf.getSsea();
@@ -276,7 +278,7 @@ public class S3OutputStream extends PositionOutputStream {
                                             .withPartNumber(currentPartNumber)
                                             .withPartSize(partSize)
                                             .withGeneralProgressListener(progressListener);
-      if (connectorConfig.uploadIntegrityCheck()) {
+      if (uploadIntegrityCheck) {
         try {
           String digest = Base64.getEncoder().encodeToString(DigestUtils.md5(inputStream));
           // Reset the marker so that the stream may be read again while uploading
